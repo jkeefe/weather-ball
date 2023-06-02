@@ -48,7 +48,7 @@ This will be run out of another repository I maintain, called **[bot-house](http
 
 #### On the device
 
-- Hit the endpoint
+- Hit the endpointcod
 - Adjust color and blinking accordingly
 
 Resources: 
@@ -64,6 +64,11 @@ Resources:
 The National Weather Service has a couple of APIs — one that's super easy to use and one that's more complicated. For a variety of reasons, I'm more interested in the more complicated one, and have started to play with it in [another project](https://github.com/jkeefe/bot-house/tree/main/bots/weather-box).
 
 So I think I might try that one, falling back to the easier one later if necessary. This is another advantage of having the brains _not_ on the hardware and in a language (nodejs) I'm more comfortable in — I can switch this up as I see fit.
+
+#### Endpoint
+
+Is: https://projects.datanews.studio/bot-data/weather-ball/latest.json
+
 
 
 
