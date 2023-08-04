@@ -54,6 +54,8 @@ I'm also going to use [`perf-gpio`](https://www.npmjs.com/package/perf-gpio) to 
 
 According to [Forgotten Minnesota](https://forgottenminnesota.com/forgotten-minnesota/2012/03/170), "In its early days, the National Weather Service would call the bank each day at 4:14 p.m. to have a bank employee set the color of the Weatherball." So I'm going to make that switch every day at that time:
 
+![IMG_5974](https://github.com/jkeefe/weather-ball/assets/312347/fc52b54d-59ac-4f5b-b9a1-17aad67d9e40)
+
 - 12 a.m. to 4:14 p.m. Eastern
     - Temperature (warmer, cooler, same)
         - Today's forecast, from NWS XML system vs.
