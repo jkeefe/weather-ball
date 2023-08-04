@@ -33,7 +33,11 @@ Initially I planned to wire up an internet-connected Arduino that would hit a pu
 
 The National Weather Service has a couple of APIs — one that's super easy to use and one that's more complicated. For a variety of reasons, I'm more interested in the more complicated one, and have started to play with it in [another project](https://github.com/jkeefe/bot-house/tree/main/bots/weather-box).
 
+[Instructions for that API are here](https://digital.mdl.nws.noaa.gov/xml/).
+
 So I think I might try that one, falling back to the easier one later if necessary. 
+
+[List of data fields available](https://digital.mdl.nws.noaa.gov/xml/docs/elementInputNames.php) (to include in the URL). Use like this: `&pop12=pop12`
 
 ## Building
 
@@ -46,7 +50,26 @@ So I think I might try that one, falling back to the easier one later if necessa
 
 I'm also going to use [`perf-gpio`](https://www.npmjs.com/package/perf-gpio) to control the pins on the Pi, especially to fade the ball in and out when it is "flashing."
 
-### 
+## Colors and timing
+
+According to [Forgotten Minnesota](https://forgottenminnesota.com/forgotten-minnesota/2012/03/170), "In its early days, the National Weather Service would call the bank each day at 4:14 p.m. to have a bank employee set the color of the Weatherball." So I'm going to make that switch every day at that time:
+
+- 12 a.m. to 4:14 p.m. Eastern
+    - Temperature (warmer, cooler, same)
+        - Today's forecast, from NWS XML system vs.
+        - Yesterday's highest observation, from the NWS API: https://api.weather.gov/stations/KNYC/observations
+    - Precipitation 
+        - QPF of 0.5" or more any time before 8 p.m. today
+
+- 4:14 p.m. to 11:59 p.m. Eastern
+    - Temperature (warmer, cooler, same)
+        - Tomorrow's forecast, from NWS XML system vs.
+        - Todays's highest observation, from the NWS API: https://api.weather.gov/stations/KNYC/observations
+    - Precipitation 
+        - QPF of 0.5" or more any time between 8 a.m. and 8 p.m. tomorrow
+
+
+
 
 
 
