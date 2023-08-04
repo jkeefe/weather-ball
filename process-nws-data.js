@@ -124,10 +124,84 @@ const parseData = (xml) => {
 
     }
 
-    console.log(JSON.stringify(parsed, null, 2))
+    // console.log(JSON.stringify(parsed, null, 2))
 
     return parsed
 }
+
+const isBeforeSwitchover = (now) => {
+
+    // switchover time is today at 4:14 p.m. ET
+    // note that "now" is in ET
+    const switchover_string = `${now.year()}-${now.month()}-${now.day()} 16:14:00` //2023-08-03 12:05:00
+    const switchover_time = dayjs.tz(switchover_string, "America/New_York")
+
+    // are we before 4:14 p.m? 
+    if (now.isBefore(switchover_time)) {
+        return True
+    }
+
+    return false
+
+}
+
+const getWeatherballTemp = (forecast, observed) => {
+
+    const difference = Math.abs(forecast - observed)
+
+    if (difference <= 5) {
+        return "same"
+    }
+
+    if (forecast > observed) {
+        return "warmer"
+    }
+
+    if (forecast < observed) {
+        return "cooler"
+    }
+
+    return null
+
+}
+
+const calculateTemp = (now, forecast, observations) => {
+
+    var temp_forecast
+    var observation_set
+
+    if (isBeforeSwitchover(now)) {
+
+        // use today's forecast vs yesterday's observations
+        temp_forecast = forecast["k-p24h-n7-1"].find(d => dayjs(d.valid_start).isSame(now, 'day'))
+        observation_set = observations.features.filter(d => dayjs(d.properties.timestamp).tz('America/New_York').isSame(now.subtract(1, 'day'), 'day'))
+
+    } else {
+
+        // use tomorrows's forecast vs todays's observations
+        temp_forecast = forecast["k-p24h-n7-1"].find(d => dayjs(d.valid_start).isSame(now.add(1, 'day'), 'day'))
+        observation_set = observations.features.filter(d => dayjs(d.properties.timestamp).tz('America/New_York').isSame(now, 'day'))
+
+    }
+
+    const relevant_temp_forecast = +temp_forecast.temperature_maximum
+    const relevant_temp_observation_C = Math.max(...observation_set.map(d => d.properties.temperature.value))
+    const relevant_temp_observation = Math.round(relevant_temp_observation_C * 9 / 5 + 32)
+
+    const response_object = {
+        forecast_temperature_date: temp_forecast.valid_start,
+        forecast_temperature: relevant_temp_forecast,
+        observed_temperature_date_a: observation_set[0].properties.timestamp,
+        observed_temperature_date_b: observation_set[observation_set.length - 1].properties.timestamp,
+        observed_temperature_max: relevant_temp_observation,
+        weatherball_temp: getWeatherballTemp(relevant_temp_forecast, relevant_temp_observation)
+
+    }
+
+    console.log(response_object)
+
+}
+
 
 const writeData = (data) => {
     // console.log(JSON.stringify(data, null, 2))
@@ -135,15 +209,23 @@ const writeData = (data) => {
     return true
 }
 
-const main = () => {
+const main = async () => {
 
-    getData("tmp/nws.xml")
-        .then(parseData)
-        // .then(formatData)
-        .then(writeData)
-        .catch(err => {
-            console.error(err)
-        })
+    const now = dayjs().tz('America/New_York')
+    const xml_data = await getData("tmp/nws.xml")
+    const forecast = parseData(xml_data)
+    const api_data = await getData("tmp/observations.json")
+    const observations = JSON.parse(api_data)
+
+    const temp_obj = calculateTemp(now, forecast, observations)
+
+
+    // .then(parseData)
+    // // .then(formatData)
+    // .then(writeData)
+    // .catch(err => {
+    //     console.error(err)
+    // })
 
 
 }
