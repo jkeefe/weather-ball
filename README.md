@@ -50,6 +50,8 @@ So I think I might try that one, falling back to the easier one later if necessa
 
 I'm also going to use [`perf-gpio`](https://www.npmjs.com/package/perf-gpio) to control the pins on the Pi, especially to fade the ball in and out when it is "flashing."
 
+To get the code onto the pi, I'm pulling it down from Github using https, so I don't need a key on the pi. I won't be able to push up from the device, but that's okay.
+
 ## Colors and timing
 
 According to [Forgotten Minnesota](https://forgottenminnesota.com/forgotten-minnesota/2012/03/170), "In its early days, the National Weather Service would call the bank each day at 4:14 p.m. to have a bank employee set the color of the Weatherball." So I'm going to make that switch every day at that time:
@@ -72,6 +74,17 @@ According to [Forgotten Minnesota](https://forgottenminnesota.com/forgotten-minn
 
 
 
+### Using CircuitPython
+
+Actually decided to light the sphere with circuit python board, and the LEDs there. Easy, simple, cheap, self-contained.
+
+Idea will be that an exteral PI will write via USB to the circuit-python file, inside the fixture.
+
+Pi will remain external.
+
+This will give maximum flexibility, and a little more transparency, too.
+
+See `circuitpython` folder for code.
 
 
 
