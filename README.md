@@ -74,18 +74,13 @@ According to [Forgotten Minnesota](https://forgottenminnesota.com/forgotten-minn
 
 
 
-### Using CircuitPython
+### Using Johnny-Five & Node-pixel
 
-Actually decided to light the sphere with circuit python board, and the LEDs there. Easy, simple, cheap, self-contained.
+Originally, I was going to use a Circuit Playground Board as the display board and a Raspberry Pi as the controller (the main reason: I need access to wifi and the internet to get the data).
 
-Idea will be that an exteral PI will write via USB to the circuit-python file, inside the fixture.
+BUT, the LEDs on board the Circuit Playground aren't great for lighting up my whole globe. Also it's a little bit of overkill: The CP boards have so many great sensors on them ... seems a waste to just use them for the LEDs.
 
-Pi will remain external.
-
-This will give maximum flexibility, and a little more transparency, too.
-
-See `circuitpython` folder for code.
-
+Instead, I'm going to run a bunh of LEDs off an Arduino and control the Arduino via NodeJS on the Rasberry Pi, using [this great documentation as an example](https://chrisruppel.com/blog/arduino-johnny-five-neopixel/).
 
 
 
