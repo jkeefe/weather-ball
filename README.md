@@ -83,5 +83,8 @@ BUT, the LEDs on board the Circuit Playground aren't great for lighting up my wh
 Instead, I'm going to run a bunh of LEDs off an Arduino and control the Arduino via NodeJS on the Rasberry Pi, using [this great documentation as an example](https://chrisruppel.com/blog/arduino-johnny-five-neopixel/).
 
 
+### Another possibility: ESP32C3
 
+I could also use this ridiculously cheap [Seedstudio ESP32C3 board](https://www.seeedstudio.com/Seeed-XIAO-ESP32C3-p-5431.html). 
 
+It'd take a bit more work. Maybe not worth the hassle. But the code to make is happen is collected [on these pages](https://pinboard.in/search/u:jkeefe?query=ESP32C3).
