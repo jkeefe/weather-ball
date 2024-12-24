@@ -88,3 +88,54 @@ Instead, I'm going to run a bunh of LEDs off an Arduino and control the Arduino 
 I could also use this ridiculously cheap [Seedstudio ESP32C3 board](https://www.seeedstudio.com/Seeed-XIAO-ESP32C3-p-5431.html). 
 
 It'd take a bit more work. Maybe not worth the hassle. But the code to make is happen is collected [on these pages](https://pinboard.in/search/u:jkeefe?query=ESP32C3).
+
+### New possibiilty: Rasberry Pi & ESP32 with WLED
+
+Currently envisioning the ball running WLED, with animation presets I've established and tested to work perfectly for various conditions, including rain, wamer, colder, snow, storms, wind, sunny, temperate, super cold, etc.
+
+These would be run on an ESP32 (or ESP32C3 maybe).
+
+The Raspberry Pi would be responsible for:
+
+- Running NodeJS
+- Connecting to the internet
+- Getting the weather
+- Making a determinaiton about what preset to use
+- Sending that preset to the ESP32 using the JSON API over a serial connection — quite possibly just the USB cable
+
+#### A wired connection
+
+Making the serial connection would happen either over USB or the TX/RX pins. There's a great writeup of how to do that [here](https://data.engrie.be/ESP32/ESP32_-_Part_12_-_ESP32_meets_Raspberry_Pi.pdf), which I've also saved as a PDF.
+
+#### Serial on the PI
+
+The full install instructions, including the Pi formatting, are [here](https://github.com/nebrius/raspi-io/wiki/Getting-a-Raspberry-Pi-ready-for-NodeBots). Seems like there may be some quirks that require a reformatting. Also handles adding Node, so that's good.
+
+I'd take this to the `node-serialport` point.
+
+Node Serialport [installation notes](https://serialport.io/docs/guide-installation#raspberry-pi-linux) have additional info, and using Node Serialport is [here](https://serialport.io/docs/guide-usage). There's also info about parsers and thigns.
+
+#### WLED serial
+
+It looks like [this comment](https://wled.discourse.group/t/serial-wired-api/3998/5) has the clearest info:
+
+```
+It is working, WLED accepts the following ASCII string over RX pin “’{“on”:“t”,“v”:true}’” @ 115200 bits per second (I could not figure out how to change baudrate but that’s OK for me).
+```
+
+More on the serial connection is available in [the WLED docs](https://kno.wled.ge/interfaces/serial/). Including:
+
+```
+If GPIO3 is allocated (e.g. for LED output), all Serial functionality except debug output is unavailable.
+
+If GPIO1 is allocated, all Serial output is disabled, including the JSON API response, Improv, and tpm2 output.
+```
+
+We're going to want the **JSON over Serial** part of these docs.
+
+#### WLED API
+
+I should be able to [set new values](https://kno.wled.ge/interfaces/json-api/#setting-new-values) through the JSON API. The one we'll want, after the presets have been set, is `{"ps": x}`, where x is a preset number from -1 to 250.
+
+
+
