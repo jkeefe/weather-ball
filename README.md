@@ -89,6 +89,7 @@ I could also use this ridiculously cheap [Seedstudio ESP32C3 board](https://www.
 
 It'd take a bit more work. Maybe not worth the hassle. But the code to make is happen is collected [on these pages](https://pinboard.in/search/u:jkeefe?query=ESP32C3).
 
+
 ### New possibiilty: Rasberry Pi & ESP32 with WLED
 
 Currently envisioning the ball running WLED, with animation presets I've established and tested to work perfectly for various conditions, including rain, wamer, colder, snow, storms, wind, sunny, temperate, super cold, etc.
@@ -103,17 +104,29 @@ The Raspberry Pi would be responsible for:
 - Making a determinaiton about what preset to use
 - Sending that preset to the ESP32 using the JSON API over a serial connection — quite possibly just the USB cable
 
+#### WLED Controller
+
+Using the very awesome [Adafruit Sparklemtion USB Stick](https://www.adafruit.com/product/6332?srsltid=AfmBOoofGwKl6_3wlmlOFxr0aYyvWj0LTiYwuOxKr_nXXjnp-QMIW6KU), which is set up for WLED. Was simple to install and connect to the LED strip.
+
+
 #### A wired connection
 
 Making the serial connection would happen either over USB or the TX/RX pins. There's a great writeup of how to do that [here](https://data.engrie.be/ESP32/ESP32_-_Part_12_-_ESP32_meets_Raspberry_Pi.pdf), which I've also saved as a PDF.
 
 #### Serial on the PI
 
-The full install instructions, including the Pi formatting, are [here](https://github.com/nebrius/raspi-io/wiki/Getting-a-Raspberry-Pi-ready-for-NodeBots). Seems like there may be some quirks that require a reformatting. Also handles adding Node, so that's good.
+The full install instructions, including the Pi formatting, are [here](https://github.com/nebrius/raspi-io/wiki/Getting-a-Raspberry-Pi-ready-for-NodeBots). Seems like there may be some quirks that require a reformatting. Also handles adding Node, so that's good. Also I used version 24.x (instead of 12 in the docs).
 
 I'd take this to the `node-serialport` point.
 
-Node Serialport [installation notes](https://serialport.io/docs/guide-installation#raspberry-pi-linux) have additional info, and using Node Serialport is [here](https://serialport.io/docs/guide-usage). There's also info about parsers and thigns.
+Node Serialport [installation notes](https://serialport.io/docs/guide-installation#raspberry-pi-linux) have additional info, and using Node Serialport is [here](https://serialport.io/docs/guide-usage). There's also info about parsers and things.
+
+Installed to here on the pi! See 1p for logins to the weatherballpi.
+
+Serialport's [API docs](https://serialport.io/docs/api-serialport/) have example code to try.
+
+
+
 
 #### WLED serial
 
@@ -137,5 +150,28 @@ We're going to want the **JSON over Serial** part of these docs.
 
 I should be able to [set new values](https://kno.wled.ge/interfaces/json-api/#setting-new-values) through the JSON API. The one we'll want, after the presets have been set, is `{"ps": x}`, where x is a preset number from -1 to 250.
 
+#### Serial from Mac
 
+- plugged WLED controller into Mac via USB
+- listed available serial ports:
 
+```
+ls /dev/tty.*
+ls /dev/cu.*
+```
+
+One is ` /dev/tty.usbmodem5A7A0426761`
+
+Using `screen`:
+
+```
+screen <port_name> <baud_rate>
+```
+
+so ...
+
+```
+screen /dev/tty.usbmodem5A7A0426761 115200
+```
+
+Pasting in `{"ps": 4}` or `{"ps": 2}` changes the preset! It worked. (Note that the text does not appear in the terminal, though)
