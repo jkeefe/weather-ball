@@ -3,6 +3,7 @@
   "dependencies": {
     "dayjs": "^1.11.9",
     "dayjs-plugin-utc": "^0.1.2",
+    "serialport": "^13.0.0",
     "xml-js": "^1.6.11"
   }
 }
