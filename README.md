@@ -175,6 +175,26 @@ screen /dev/tty.usbmodem5A7A0426761 115200
 
 Pasting in `{"ps": 4}` or `{"ps": 2}` changes the preset! It worked. (Note that the text does not appear in the terminal, though)
 
+#### Serial from Pi
+
+Followed the instructions [here](https://serialport.io/docs/guide-usage)
+
+```
+To enable the serial port on Raspbian, you launch raspi-config, then select Interfacing Options, then Serial. You will then be asked two questions:
+
+1. Would you like a login shell to be accessible over serial?
+2. Would you like the serial port hardware to be enabled?
+
+You must answer No to question 1 and Yes to question 2. If the login shell is left active, you will experience hangs and or disconnects.
+
+If you're going to use sudo or root to install Node-Serialport, npm will require you to use the unsafe parameters flag.
+
+sudo npm install serialport --unsafe-perm
+```
+
+Then I started using the example serialport code, but it required a path. I couldn't find any of the paths they described, and after some googling found that it might be called something like `/dev/ttyACM0` ... and sure enough, that was it.
+
+
 #### Logging into the Pi via SSH
 
 Getting in, on the same network:
@@ -184,4 +204,10 @@ ssh weatherballpi@weatherballpi.local
 ```
 
 Password saved in password manager.
+
+#### Shutting down the pi
+
+```
+sudo shutdown -h now
+```
 
