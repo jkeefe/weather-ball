@@ -157,7 +157,6 @@ I should be able to [set new values](https://kno.wled.ge/interfaces/json-api/#se
 
 ```
 ls /dev/tty.*
-ls /dev/cu.*
 ```
 
 One is ` /dev/tty.usbmodem5A7A0426761`
@@ -175,3 +174,14 @@ screen /dev/tty.usbmodem5A7A0426761 115200
 ```
 
 Pasting in `{"ps": 4}` or `{"ps": 2}` changes the preset! It worked. (Note that the text does not appear in the terminal, though)
+
+#### Logging into the Pi via SSH
+
+Getting in, on the same network:
+
+```
+ssh weatherballpi@weatherballpi.local
+```
+
+Password saved in password manager.
+
