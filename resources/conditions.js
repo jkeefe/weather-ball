@@ -1,4 +1,4 @@
-[
+export const conditions = [
     {
         "nws_icons": [
             "skc"
@@ -194,7 +194,7 @@
             "nskc"
         ],
         "nws_words_sample": "Night, Clear",
-        "ball_id": 24,
+        "ball_id": 25,
         "enhancements": null
     }
 ]

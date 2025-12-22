@@ -1,4 +1,6 @@
 import * as fs from 'fs'
+import { SerialPort } from 'serialport'
+import { conditions } from './resources/conditions.js'
 import fetchRetry from 'fetch-retry'
 
 // great add-in to allow retries and back-off
@@ -11,58 +13,30 @@ const fetch = fetchRetry(global.fetch, {
     // retryDelay: 2000 // 2 seconds
 });
 
+// set the serial port
+const port = new SerialPort({ path: '/dev/ttyACM0', baudRate: 115200 })
 
-import dayjs from 'dayjs';
-//  in case of module not found errors, try adding .js to end of filenames below
-import updateLocale from 'dayjs/plugin/updateLocale.js';
-import utc from 'dayjs/plugin/utc.js';
-import timezone from 'dayjs/plugin/timezone.js';
-
-// set up the as-of date
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.tz.setDefault("America/New_York");
-dayjs.extend(updateLocale);
-dayjs.updateLocale("en", {
-    monthsShort: [
-        "Jan.",
-        "Feb.",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "Aug.",
-        "Sept.",
-        "Oct.",
-        "Nov.",
-        "Dec."
-    ],
-    meridiem: (hour, minute, isLowercase) => (hour >= 12 ? "pm" : "am")
-});
-
-const getHour = time => {
-    return dayjs
-        .unix(time)
-        .tz("America/New_York")
-        .format("h a");
-};
-
-/// Constants
-
+// constants
 const FORECAST_URL = `https://api.weather.gov/gridpoints/OKX/33,37/forecast/hourly`
+const DOMAIN = "reallygoodsmarts.nyc"
+const EMAIL = "weather"
 
 
 /// operational functions 
 
-const getDetails = async (url) => {
+const downloadDetails = async (url) => {
 
     var details_blob
 
     // get the quake detail file from usgs
     console.log(`Grabbing hourly detail from ${url}`)
     try {
-        const response = await fetch(url)
+        const response = await fetch(url, {
+            headers: {
+                "Acccept": "application/geo+json",
+                "User-Agent": `(${DOMAIN}, ${EMAIL}@${DOMAIN})` // per nws request
+            }
+        })
         details_blob = await response.json()
     } catch (error) {
         console.error(`Error fetching detail after retries. Erroring out!`)
@@ -72,189 +46,64 @@ const getDetails = async (url) => {
     return details_blob
 }
 
-const getData = async (filename) => {
+const parseIcon = (hour) => {
 
-    let data = fs.readFileSync(filename, { encoding: 'utf-8' });
-    return data
+    // example url "https://api.weather.gov/icons/land/night/few?size=small" and we want "few"
+    const url = new URL(hour.icon)
 
-}
+    const segments = url.pathname.split("/").filter(Boolean);
+    const extractedValue = segments[3]; // ie "few"
 
-const parseData = (xml) => {
-    var result = convert.xml2js(xml, { compact: false });
-    var parsed = {}
-
-    // drill to the base data
-    const data = result.elements[0].elements.find(d => d.name == "data")
-
-    // get the time layouts
-    const time_layouts = data.elements.filter(d => d.name == "time-layout")
-
-    // get the weather data
-    const weather = data.elements.find(d => d.name == "parameters")
-
-    // console.log(JSON.stringify(weather, null, 2))
-
-    // loop through the time layouts and populate them with the corresponding data from elsewhere
-    for (var layout of time_layouts) {
-
-        // establish the block as a key
-        const layout_name = layout.elements.filter(d => d.name == "layout-key")[0].elements[0].text
-        parsed[layout_name] = []
-
-        // get all the valid times in the layout
-        const start_valid_times = layout.elements.filter(d => d.name == "start-valid-time")
-        const end_valid_times = layout.elements.filter(d => d.name == "end-valid-time")
-
-        // go get any weather data that uses this time layout
-        const weather_sets = weather.elements.filter(d => d.attributes["time-layout"] == layout_name)
-
-        // then loop through the the start times to build the time blocks
-        for (let index in start_valid_times) {
-
-            const block = {
-                valid_start: start_valid_times[index].elements[0].text
-            }
-
-            // some layouts don't have end valid times!
-            if (end_valid_times.length > 0) {
-                block.valid_end = end_valid_times[index].elements[0].text
-            }
-
-            // loop through the weather sets matching this layout
-            // and pluck the corresponding index value
-
-            for (let weather_set of weather_sets) {
-
-
-                var key_name = (weather_set.attributes.type) ? weather_set.name + "_" + weather_set.attributes.type : weather_set.name
-                key_name = key_name.replaceAll(" ", "_").replaceAll("-", "_")
-
-                // get the weather values, 
-                // but handle conditions-icon differently
-                var weather_values
-                if (weather_set.name == "conditions-icon") {
-                    key_name = weather_set.name
-                    weather_values = weather_set.elements.filter(d => d.name == "icon-link")
-                } else {
-                    // just use the value
-                    weather_values = weather_set.elements.filter(d => d.name == "value")
-                }
-
-                // console.log(JSON.stringify(weather_values, null, 2))
-
-                // add this value to the block at the same index as the valid times
-                block[key_name] = weather_values[index].elements[0].text
-
-            }
-
-            parsed[layout_name].push(block)
-
-        }
-
-
-
-    }
-
-    // console.log(JSON.stringify(parsed, null, 2))
-
-    return parsed
-}
-
-const isBeforeSwitchover = (now) => {
-
-    // switchover time is today at 4:14 p.m. ET
-    // note that "now" is in ET
-    const switchover_string = `${now.year()}-${now.month()}-${now.day()} 16:14:00` //2023-08-03 12:05:00
-    const switchover_time = dayjs.tz(switchover_string, "America/New_York")
-
-    // are we before 4:14 p.m? 
-    if (now.isBefore(switchover_time)) {
-        return True
-    }
-
-    return false
-
-}
-
-const getWeatherballTemp = (forecast, observed) => {
-
-    const difference = Math.abs(forecast - observed)
-
-    if (difference <= 5) {
-        return "same"
-    }
-
-    if (forecast > observed) {
-        return "warmer"
-    }
-
-    if (forecast < observed) {
-        return "cooler"
-    }
-
-    return null
-
-}
-
-const calculateTemp = (now, forecast, observations) => {
-
-    var temp_forecast
-    var observation_set
-
-    if (isBeforeSwitchover(now)) {
-
-        // use today's forecast vs yesterday's observations
-        temp_forecast = forecast["k-p24h-n7-1"].find(d => dayjs(d.valid_start).isSame(now, 'day'))
-        observation_set = observations.features.filter(d => dayjs(d.properties.timestamp).tz('America/New_York').isSame(now.subtract(1, 'day'), 'day'))
-
+    // look for special case of clear/broken skies at night
+    const calm_night_icons = [
+        "bkn",
+        "sct",
+        "few",
+        "skc"
+    ]
+    if (segments[2] === "night" && calm_night_icons.includes(extractedValue)) {
+        return "n" + extractedValue
     } else {
-
-        // use tomorrows's forecast vs todays's observations
-        temp_forecast = forecast["k-p24h-n7-1"].find(d => dayjs(d.valid_start).isSame(now.add(1, 'day'), 'day'))
-        observation_set = observations.features.filter(d => dayjs(d.properties.timestamp).tz('America/New_York').isSame(now, 'day'))
-
+        return extractedValue
     }
-
-    const relevant_temp_forecast = +temp_forecast.temperature_maximum
-    const relevant_temp_observation_C = Math.max(...observation_set.map(d => d.properties.temperature.value))
-    const relevant_temp_observation = Math.round(relevant_temp_observation_C * 9 / 5 + 32)
-
-    const response_object = {
-        forecast_temperature_date: temp_forecast.valid_start,
-        forecast_temperature: relevant_temp_forecast,
-        observed_temperature_date_a: observation_set[0].properties.timestamp,
-        observed_temperature_date_b: observation_set[observation_set.length - 1].properties.timestamp,
-        observed_temperature_max: relevant_temp_observation,
-        weatherball_temp: getWeatherballTemp(relevant_temp_forecast, relevant_temp_observation)
-
-    }
-
-    console.log(response_object)
 
 }
 
+const setWeatherBall = async (preset) => {
 
-const writeData = (data) => {
-    // console.log(JSON.stringify(data, null, 2))
-    fs.writeFileSync('data/latest.json', JSON.stringify(data));
-    return true
+    // send the WLED preset to the weather ball over serial
+    port.write(`{"ps": ${preset}}`, function (err) {
+        if (err) {
+            return console.log('Error on write: ', err.message)
+        }
+        console.log('message written')
+    })
+
+    // Open errors will be emitted as an error event
+    port.on('error', function (err) {
+        console.log('Error: ', err.message)
+    })
+
 }
+
 
 const main = async () => {
 
     const now = dayjs().tz('America/New_York')
-    const forecast = await getDetails(FORECAST_URL)
+    const forecast = await downloadDetails(FORECAST_URL)
 
-    // get second periods object
-    console.log(forecast.properties.periods[1])
+    // get the second periods object, which is the forecast for the next hour
+    const hour = forecast.properties.periods[1]
+    console.log(hour)
 
-    // .then(parseData)
-    // // .then(formatData)
-    // .then(writeData)
-    // .catch(err => {
-    //     console.error(err)
-    // })
+    // get the associated icon
+    const icon = parseIcon(hour)
+    console.log(icon)
 
+    // get the associated weatherball preset
+    const preset = conditions.find(d => d.nws_icons.includes(icon)).ball_id
+
+    console.log(`Condition: ${hour.shortForecast}\nIcon: ${icon}\nBall Preset: ${preset}`)
 
 }
 
