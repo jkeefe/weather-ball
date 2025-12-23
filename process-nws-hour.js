@@ -89,7 +89,9 @@ const setWeatherBall = async (preset) => {
 
 const main = async () => {
 
-    const now = dayjs().tz('America/New_York')
+    // set the colorful start to get going
+    await setWeatherBall(26)
+
     const forecast = await downloadDetails(FORECAST_URL)
 
     // get the second periods object, which is the forecast for the next hour
@@ -103,7 +105,9 @@ const main = async () => {
     // get the associated weatherball preset
     const preset = conditions.find(d => d.nws_icons.includes(icon)).ball_id
 
+    await setWeatherBall(preset)
     console.log(`Condition: ${hour.shortForecast}\nIcon: ${icon}\nBall Preset: ${preset}`)
+    console.log("Done")
 
 }
 
