@@ -34,7 +34,8 @@ const downloadDetails = async (url) => {
         const response = await fetch(url, {
             headers: {
                 "Acccept": "application/geo+json",
-                "User-Agent": `(${DOMAIN}, ${EMAIL}@${DOMAIN})` // per nws request
+                "User-Agent": `(${DOMAIN}, ${EMAIL}@${DOMAIN})`, // per nws request
+                "Cache-Control": "max-age=0"
             }
         })
         details_blob = await response.json()
@@ -100,7 +101,6 @@ const main = async () => {
 
     // get the associated icon
     const icon = parseIcon(hour)
-    console.log(icon)
 
     // get the associated weatherball preset
     const preset = conditions.find(d => d.nws_icons.includes(icon)).ball_id
