@@ -35,7 +35,8 @@ const downloadDetails = async (url) => {
             headers: {
                 "Acccept": "application/geo+json",
                 "User-Agent": `(${DOMAIN}, ${EMAIL}@${DOMAIN})`, // per nws request
-                "Cache-Control": "max-age=0"
+                "Cache-Control": "no-cache",
+                "cache": "no-store"
             }
         })
         details_blob = await response.json()
