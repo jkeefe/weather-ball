@@ -34,9 +34,8 @@ const downloadDetails = async (url) => {
         const response = await fetch(url, {
             headers: {
                 "Acccept": "application/geo+json",
-                "User-Agent": `Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36`, // per nws request
-                "Cache-Control": "no-store",
-                "cache": "no-store"
+                "User-Agent": `(${DOMAIN}, ${EMAIL}@${DOMAIN})`, // per nws request
+                "Cache-Control": "must-revalidate"
             }
         })
         details_blob = await response.json()
