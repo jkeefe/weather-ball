@@ -74,9 +74,9 @@ const setWeatherBall = async (preset) => {
     // send the WLED preset to the weather ball over serial
     port.write(`{"ps": ${preset}}`, function (err) {
         if (err) {
-            return console.log('Error on write: ', err.message)
+            return console.log('Error writing to weather ball: ', err.message)
         }
-        console.log('message written')
+        console.log(`Serial message with preset ${preset} written to weather ball.`)
     })
 
     // Open errors will be emitted as an error event
