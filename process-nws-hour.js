@@ -35,7 +35,7 @@ const downloadDetails = async (url) => {
             headers: {
                 "Acccept": "application/geo+json",
                 "User-Agent": `(${DOMAIN}, ${EMAIL}@${DOMAIN})`, // per nws request
-                "Cache-Control": "no-cache",
+                "Cache-Control": "no-store",
                 "cache": "no-store"
             }
         })
