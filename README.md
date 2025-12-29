@@ -334,3 +334,90 @@ https://digital.mdl.nws.noaa.gov/xml/sample_products/browser_interface/ndfdXMLcl
 Just the icons: 
 
 https://digital.mdl.nws.noaa.gov/xml/sample_products/browser_interface/ndfdXMLclient.php?lat=40.77&lon=-73.98&product=time-series&icons=icons
+
+## Cron
+
+Running a Node.js Script Every 15 Minutes with Cron on Raspberry Pi
+
+This configuration runs a Node.js script every 15 minutes, even when you are not logged in via SSH.
+
+1. Find Absolute Paths
+
+Cron does not load your shell environment, so absolute paths are required.
+
+Find the Node binary:
+
+`which node`
+
+
+Example output:
+
+`/usr/bin/node`
+
+Find your script path, for example:
+
+`/home/weatherballpi/Code/weather-ball/weather-ball.js`
+
+2. Make the Script Executable (Recommended)
+
+Add a shebang at the top of your script:
+
+`#!/usr/bin/node`
+
+
+Make it executable:
+
+`chmod +x /home/weatherballpi/Code/weather-ball/weather-ball.js`
+
+
+Test manually:
+
+`/home/weatherballpi/Code/weather-ball/weather-ball.js`
+
+3. Create the Cron Job
+
+Open your user crontab:
+
+`crontab -e`
+
+
+Add the following line:
+
+*/15 * * * * /usr/bin/node /home/weatherballpi/Code/weather-ball/weather-ball.js >> /home/weatherballpi/Code/weather-ball/tmp/cron.log 2>&1
+
+Cron Timing Fields
+Field	Meaning
+*/15	Every 15 minutes
+*	Every hour
+*	Every day of month
+*	Every month
+*	Every day of week
+
+4. Ensure Cron Is Running
+
+`sudo systemctl status cron`
+
+Expected output:
+
+`Active: active (running)`
+
+5. Verify Execution
+
+After 15 minutes:
+
+`cat /home/pi/cron.log`
+
+
+To inspect cron activity:
+
+`grep CRON /var/log/syslog`
+
+6. Environment Variables (If Needed)
+
+Cron does not load .bashrc or .profile. Define variables explicitly:
+
+```
+PATH=/usr/bin:/bin
+NODE_ENV=production
+*/15 * * * * /usr/bin/node /home/pi/scripts/weatherPoller.js >> /home/pi/cron.log 2>&1
+```

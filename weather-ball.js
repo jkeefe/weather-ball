@@ -1,3 +1,5 @@
+#!/usr/bin/node
+
 import * as convert from 'xml-js'
 import { SerialPort } from 'serialport'
 import { conditions } from './resources/conditions.js'
