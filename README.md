@@ -325,3 +325,12 @@ sudo shutdown -h now
 
 Icons: https://www.weather.gov/forecast-icons
 
+**So, once again, api.weather.gov does not reliably provide fresh data, despite multiple attempts at clearing cache.** Instead I'm going to go back to the map-point xml files.
+
+## Forecast - via XML
+
+https://digital.mdl.nws.noaa.gov/xml/sample_products/browser_interface/ndfdXMLclient.php?lat=40.77&lon=-73.98&product=time-series&maxt=maxt&mint=mint&temp=temp&appt=appt&pop12=pop12&wspd=wspd&wgust=wgust&icons=icons&qpf=qpf
+
+Just the icons: 
+
+https://digital.mdl.nws.noaa.gov/xml/sample_products/browser_interface/ndfdXMLclient.php?lat=40.77&lon=-73.98&product=time-series&icons=icons
