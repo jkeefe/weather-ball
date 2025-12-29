@@ -53,7 +53,7 @@ const downloadDetails = async (url) => {
 const parseData = (xml) => {
     // a universal weather.gov xml forecast parser
     var result = convert.xml2js(xml, { compact: false });
-    var parsed = {}
+    var parsed = []
 
     // drill to the base data
     const data = result.elements[0].elements.find(d => d.name == "data")
@@ -69,7 +69,6 @@ const parseData = (xml) => {
 
         // establish the block as a key
         const layout_name = layout.elements.filter(d => d.name == "layout-key")[0].elements[0].text
-        parsed[layout_name] = []
 
         // get all the valid times in the layout
         const start_valid_times = layout.elements.filter(d => d.name == "start-valid-time")
@@ -82,6 +81,7 @@ const parseData = (xml) => {
         for (let index in start_valid_times) {
 
             const block = {
+                layout_name: layout_name,
                 valid_start: start_valid_times[index].elements[0].text
             }
 
@@ -117,7 +117,7 @@ const parseData = (xml) => {
 
             }
 
-            parsed[layout_name].push(block)
+            parsed.push(block)
 
         }
 
@@ -172,10 +172,10 @@ const main = async () => {
 
     // parse the xml
     const parsed = parseData(forecast)
-    // console.log(JSON.stringify(parsed, null, 2))
+    console.log(JSON.stringify(parsed, null, 2))
 
     // get the second forecast object, which will always be the forecast for the next hour
-    const hour = parsed["k-p1h-n64-1"][0]
+    const hour = parsed[0]
     console.log("Using hour data:", hour)
 
     // get the associated icon

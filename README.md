@@ -211,7 +211,6 @@ cd ~/Code/weather-ball
 
 
 
-
 #### Shutting down the pi
 
 ```
@@ -223,107 +222,6 @@ sudo shutdown -h now
 - Lat/lon 40.7558, -73.9932
 - `https://api.weather.gov/points/40.7558,-73.9932`
 - Hourly forecast: `https://api.weather.gov/gridpoints/OKX/33,37/forecast/hourly`
-- 
-
-
-```json
-{
-  "@context": [
-    "https://geojson.org/geojson-ld/geojson-context.jsonld",
-    {
-      "@version": "1.1",
-      "wx": "https://api.weather.gov/ontology#",
-      "s": "https://schema.org/",
-      "geo": "http://www.opengis.net/ont/geosparql#",
-      "unit": "http://codes.wmo.int/common/unit/",
-      "@vocab": "https://api.weather.gov/ontology#",
-      "geometry": {
-        "@id": "s:GeoCoordinates",
-        "@type": "geo:wktLiteral"
-      },
-      "city": "s:addressLocality",
-      "state": "s:addressRegion",
-      "distance": {
-        "@id": "s:Distance",
-        "@type": "s:QuantitativeValue"
-      },
-      "bearing": {
-        "@type": "s:QuantitativeValue"
-      },
-      "value": {
-        "@id": "s:value"
-      },
-      "unitCode": {
-        "@id": "s:unitCode",
-        "@type": "@id"
-      },
-      "forecastOffice": {
-        "@type": "@id"
-      },
-      "forecastGridData": {
-        "@type": "@id"
-      },
-      "publicZone": {
-        "@type": "@id"
-      },
-      "county": {
-        "@type": "@id"
-      }
-    }
-  ],
-  "id": "https://api.weather.gov/points/40.7558,-73.9932",
-  "type": "Feature",
-  "geometry": {
-    "type": "Point",
-    "coordinates": [
-      -73.9932,
-      40.7558
-    ]
-  },
-  "properties": {
-    "@id": "https://api.weather.gov/points/40.7558,-73.9932",
-    "@type": "wx:Point",
-    "cwa": "OKX",
-    "forecastOffice": "https://api.weather.gov/offices/OKX",
-    "gridId": "OKX",
-    "gridX": 33,
-    "gridY": 37,
-    "forecast": "https://api.weather.gov/gridpoints/OKX/33,37/forecast",
-    "forecastHourly": "https://api.weather.gov/gridpoints/OKX/33,37/forecast/hourly",
-    "forecastGridData": "https://api.weather.gov/gridpoints/OKX/33,37",
-    "observationStations": "https://api.weather.gov/gridpoints/OKX/33,37/stations",
-    "relativeLocation": {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -74.027926,
-          40.745251
-        ]
-      },
-      "properties": {
-        "city": "Hoboken",
-        "state": "NJ",
-        "distance": {
-          "unitCode": "wmoUnit:m",
-          "value": 3151.6290465354
-        },
-        "bearing": {
-          "unitCode": "wmoUnit:degree_(angle)",
-          "value": 68
-        }
-      }
-    },
-    "forecastZone": "https://api.weather.gov/zones/forecast/NYZ072",
-    "county": "https://api.weather.gov/zones/county/NYC061",
-    "fireWeatherZone": "https://api.weather.gov/zones/fire/NYZ212",
-    "timeZone": "America/New_York",
-    "radarStation": "KOKX"
-  }
-}
-```
-
-Icons: https://www.weather.gov/forecast-icons
 
 **So, once again, api.weather.gov does not reliably provide fresh data, despite multiple attempts at clearing cache.** Instead I'm going to go back to the map-point xml files.
 
@@ -372,6 +270,10 @@ Make it executable:
 Test manually:
 
 `/home/weatherballpi/Code/weather-ball/weather-ball.js`
+
+Also make a **tmp** directory for the log file.
+
+`mkdir /home/weatherballpi/Code/weather-ball/tmp`
 
 3. Create the Cron Job
 
