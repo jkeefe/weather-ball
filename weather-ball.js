@@ -172,7 +172,7 @@ const main = async () => {
 
     // parse the xml
     const parsed = parseData(forecast)
-    console.log(JSON.stringify(parsed, null, 2))
+    // console.log(JSON.stringify(parsed, null, 2))
 
     // get the second forecast object, which will always be the forecast for the next hour
     const hour = parsed[0]
