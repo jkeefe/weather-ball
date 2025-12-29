@@ -337,7 +337,7 @@ https://digital.mdl.nws.noaa.gov/xml/sample_products/browser_interface/ndfdXMLcl
 
 ## Cron
 
-Running a Node.js Script Every 15 Minutes with Cron on Raspberry Pi
+Running a Node.js Script Every 15 Minutes with Cron on Raspberry Pi (by ChatGPT)
 
 This configuration runs a Node.js script every 15 minutes, even when you are not logged in via SSH.
 
@@ -348,7 +348,6 @@ Cron does not load your shell environment, so absolute paths are required.
 Find the Node binary:
 
 `which node`
-
 
 Example output:
 
@@ -367,6 +366,8 @@ Add a shebang at the top of your script:
 Make it executable:
 
 `chmod +x /home/weatherballpi/Code/weather-ball/weather-ball.js`
+
+(Note: This alters the file, so you'll need to commit back to Github if you want to keep things in sync.)
 
 Test manually:
 
@@ -431,3 +432,34 @@ PATH=/usr/bin:/bin
 NODE_ENV=production
 */15 * * * * /usr/bin/node /home/pi/scripts/weatherPoller.js >> /home/pi/cron.log 2>&1
 ```
+
+### Runding cron on boot
+
+_from ChatGPT_
+
+Provided your Raspberry Pi boots normally and the cron service is enabled, your cron job will resume automatically after every power cycle.
+
+Here is what happens at startup:
+
+- The operating system boots.
+- The cron service starts as part of the system initialization sequence.
+- Your user’s crontab is loaded into memory.
+- The job begins executing again on the next matching schedule boundary.
+
+There is nothing special you need to do in your crontab to make this happen.
+
+One-Time Verification
+
+Run the following command once to ensure cron is enabled at boot:
+
+`sudo systemctl is-enabled cron`
+
+Expected output:
+
+`enabled`
+
+If it is not enabled, correct it with:
+
+`sudo systemctl enable cron`
+
+From that point forward, your Raspberry Pi may be powered off, unplugged, or rebooted at any time, and your Node.js script will resume its 15-minute execution cycle automatically after startup.
