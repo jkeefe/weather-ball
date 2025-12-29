@@ -172,12 +172,11 @@ const main = async () => {
 
     // parse the xml
     const parsed = parseData(forecast)
-    console.log(JSON.stringify(parsed, null, 2))
-
+    // console.log(JSON.stringify(parsed, null, 2))
 
     // get the second forecast object, which will always be the forecast for the next hour
     const hour = parsed["k-p1h-n64-1"][0]
-    // console.log("Using hour data:", hour)
+    console.log("Using hour data:", hour)
 
     // get the associated icon
     const icon = parseIcon(hour)

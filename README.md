@@ -364,11 +364,9 @@ Add a shebang at the top of your script:
 
 `#!/usr/bin/node`
 
-
 Make it executable:
 
 `chmod +x /home/weatherballpi/Code/weather-ball/weather-ball.js`
-
 
 Test manually:
 
