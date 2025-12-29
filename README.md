@@ -383,15 +383,27 @@ Open your user crontab:
 
 Add the following line:
 
+```
 */15 * * * * /usr/bin/node /home/weatherballpi/Code/weather-ball/weather-ball.js >> /home/weatherballpi/Code/weather-ball/tmp/cron.log 2>&1
+```
+
+Or, for 5, 20, 35, 50 past the hour ...
+
+```
+5,20,35,50 * * * * /usr/bin/node /home/weatherballpi/Code/weather-ball/weather-ball.js >> /home/weatherballpi/Code/weather-ball/tmp/cron.log 2>&1
+```
 
 Cron Timing Fields
+
+```
 Field	Meaning
+
 */15	Every 15 minutes
 *	Every hour
 *	Every day of month
 *	Every month
 *	Every day of week
+```
 
 4. Ensure Cron Is Running
 
@@ -405,7 +417,7 @@ Expected output:
 
 After 15 minutes:
 
-`cat /home/pi/cron.log`
+`cat /home/weatherballpi/Code/weather-ball/tmp/cron.log`
 
 
 To inspect cron activity:
