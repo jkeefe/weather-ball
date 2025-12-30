@@ -15,8 +15,8 @@ const fetch = fetchRetry(global.fetch, {
     // retryDelay: 2000 // 2 seconds
 });
 
-// set the serial port
-const port = new SerialPort({ path: '/dev/ttyACM0', baudRate: 115200 })
+// // set the serial port
+// const port = new SerialPort({ path: '/dev/ttyACM0', baudRate: 115200 })
 
 // constants
 // const FORECAST_URL = `https://api.weather.gov/gridpoints/OKX/33,37/forecast/hourly`
@@ -137,9 +137,11 @@ const parseIcon = (hour) => {
 
     const segments = url.pathname.split("/").filter(Boolean);
     const extractedValue = segments[2]; // => "nra70.jpg"
+    console.log(extractedValue)
 
-    const regex = /^([a-zA-Z]+)\d+\.jpg$/;
+    const regex = /^([a-zA-Z]+)\d*\.jpg$/;
     const match = extractedValue.match(regex); // = "nra"
+    console.log(`Extracted icon string: ${extractedValue}`)
 
     if (match) {
         return match[1]
@@ -180,14 +182,16 @@ const main = async () => {
 
     // get the associated icon
     const icon = parseIcon(hour)
+    console.log(`Icon: ${icon}`)
 
     // get the associated weatherball preset
     let preset = conditions.find(d => d.nws_icons.includes(icon)).ball_id
 
     if (!preset) { preset = 26 }
+    console.log(`Ball Preset: ${preset}`)
 
-    await setWeatherBall(preset)
-    console.log(`Icon: ${icon}\nBall Preset: ${preset}`)
+    // await setWeatherBall(preset)
+
     console.log("Done")
 
 }
