@@ -15,8 +15,8 @@ const fetch = fetchRetry(global.fetch, {
     // retryDelay: 2000 // 2 seconds
 });
 
-// // set the serial port
-// const port = new SerialPort({ path: '/dev/ttyACM0', baudRate: 115200 })
+// set the serial port
+const port = new SerialPort({ path: '/dev/ttyACM0', baudRate: 115200 })
 
 // constants
 // const FORECAST_URL = `https://api.weather.gov/gridpoints/OKX/33,37/forecast/hourly`
@@ -190,7 +190,7 @@ const main = async () => {
     if (!preset) { preset = 26 }
     console.log(`Ball Preset: ${preset}`)
 
-    // await setWeatherBall(preset)
+    await setWeatherBall(preset)
 
     console.log("Done")
 
