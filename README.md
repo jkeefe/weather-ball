@@ -170,7 +170,7 @@ So I think I might try that one, falling back to the easier one later if necessa
 
 [List of data fields available](https://digital.mdl.nws.noaa.gov/xml/docs/elementInputNames.php) (to include in the URL). Use like this: `&pop12=pop12`
 
-_(NOTE: I tried to use the NWS forecast API at `https://api.weather.gov/gridpoints/OKX/33,37/forecast/hourly` but as with other projects I've played with, I couldn't get weather.gov toreliably provide fresh data, despite multiple attempts at clearing the cache. I'd often get results several hours old.)_
+_(NOTE: I tried to use the NWS forecast API at `https://api.weather.gov/gridpoints/OKX/33,37/forecast/hourly` but as with other projects I've played with, I couldn't get weather.gov to reliably provide fresh data, despite multiple attempts at clearing the cache. I'd often get results several hours old.)_
 
 XML link example, using latitude/longitude of 40.7558, -73.9932:
 
