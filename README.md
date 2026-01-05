@@ -62,11 +62,11 @@ The **ESP32** would be running [WLED](https://kno.wled.ge/), with animation pres
 
 I'm using the very awesome [Adafruit Sparklemtion USB Stick](https://www.adafruit.com/product/6332?srsltid=AfmBOoofGwKl6_3wlmlOFxr0aYyvWj0LTiYwuOxKr_nXXjnp-QMIW6KU), which is set up for WLED. Was simple to install and connect to the LED strip.
 
-After some experimentation, I set up a bunch of presets.
+After some experimentation, I set up a bunch of presets. I've stored the [WLED preset file](resources/wled_presets.json) and the [WLED configutation](resources/wled_cfg.json) in this repo.
 
 ### A wired connection
 
-Making the serial connection from the Pi to the WLED controller would happen either over USB or the TX/RX pins. There's a great writeup of how to do that [here](https://data.engrie.be/ESP32/ESP32_-_Part_12_-_ESP32_meets_Raspberry_Pi.pdf), which I've also saved as a PDF.
+Making the serial connection from the Pi to the WLED controller could happen either over USB or the TX/RX pins. There's a great writeup of how to do that [here](https://data.engrie.be/ESP32/ESP32_-_Part_12_-_ESP32_meets_Raspberry_Pi.pdf).
 
 In the end, I figured out how to make this connection over USB.
 
