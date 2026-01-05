@@ -26,46 +26,27 @@ I've often thought of replicating the Weatherball for myself, and recently had a
 
 According to [Forgotten Minnesota](https://forgottenminnesota.com/forgotten-minnesota/2012/03/170), "In its early days, the National Weather Service would call the bank each day at 4:14 p.m. to have a bank employee set the color of the Weatherball".
 
-My initial plan was to mimic that:
+My initial plan was to mimic that, but later I decided to get fancy and use [WLED](https://kno.wled.ge/) to make a variety of colors and animations to reflect the forecast.
 
-![IMG_5974](https://github.com/jkeefe/weather-ball/assets/312347/fc52b54d-59ac-4f5b-b9a1-17aad67d9e40)
+Additionally, after consulting with my Times weather colleagues who would be sitting next to the ball, I decided to reflect the forecast expected **in the next hour**. So looking at the ball at 10:35 a.m., for example, will give you the forecast for 11 a.m.
 
-- 12 a.m. to 4:14 p.m. Eastern
+To pick the correct WLED preset for the forecast, I'm relying on the "[icon](https://www.weather.gov/forecast-icons)" value sent by the National Weather Service in their XML api. It dictates the icons used on [local weather pages](https://forecast.weather.gov/MapClick.php?lat=40.7130466&lon=-74.0072301).
 
-  - Temperature (warmer, cooler, same)
-    - Today's forecast, from NWS XML system vs.
-    - Yesterday's highest observation, from the NWS API: https://api.weather.gov/stations/KNYC/observations
-  - Precipitation
-    - QPF of 0.5" or more any time before 8 p.m. today
-
-- 4:14 p.m. to 11:59 p.m. Eastern
-  - Temperature (warmer, cooler, same)
-    - Tomorrow's forecast, from NWS XML system vs.
-    - Todays's highest observation, from the NWS API: https://api.weather.gov/stations/KNYC/observations
-  - Precipitation
-    - QPF of 0.5" or more any time between 8 a.m. and 8 p.m. tomorrow
-
-Later I decided to use [WLED](https://kno.wled.ge/), and take advantage of the the patterns available with that software to make a variety of weather moods that reflect the forecast.
-
-Additionally, after consulting with my Times weather colleagues who would be sitting next to the ball, I decided to reflect the forecast expected **in the next hour**. So looking at the ball at 10:35 a.m., for example, would give you the forecast for 11 a.m.
-
-To pick the correct WLED preset for the forecast, I'm relying on the "[icon](https://www.weather.gov/forecast-icons)" value sent by the National Weather Service in their XML api.
-
-And to match the icon to the WLED preset, I'm using a Rapsberry Pi connected both to the internet and to the WLED controller.
+To get the icon from the NWS and match the icon to the WLED preset, I'm using a Rapsberry Pi connected both to the internet and to a WLED controller.
 
 ## Building
 
 ### Hardware
 
 - A Raspberry Pi connected to the internet and running nodejs
-- A string of multicolored, addressable LEDs
-- A globe lamp top
-- 3D-printed stand
+- A [string of multicolored, addressable LEDs](https://www.alibaba.com/product-detail/WS2811-WS2812-5V-3PIN-Black-Wire_1601449450195.html?spm=a2700.7724857.0.0.1fbb481apSm98r)
+- A globe lamp top (from Ebay)
+- 3D-printed stand (by me)
 - A [WLED controller](https://www.adafruit.com/product/6332?srsltid=AfmBOoplxcLC_5V_fN_SjUxS82Fx95vbnGWywRqpA-yYg1ozKl7LOp0K), to animate the LEDs in weather-related patterns
 
 ### Rasberry Pi & ESP32 with WLED
 
-After many different possible setups, I setteled on pairing a Raspberry Pi with an ESP32 running WLED.
+After considering different setups, I setteled on pairing a Raspberry Pi with an ESP32 running WLED.
 
 The **Raspberry Pi** would be responsible for:
 
@@ -77,17 +58,17 @@ The **Raspberry Pi** would be responsible for:
 
 The **ESP32** would be running [WLED](https://kno.wled.ge/), with animation presets I established and tested to work for various conditions including rain, wamer, colder, snow, storms, wind, sunny, temperate, super cold, etc.
 
-### WLED Controller
+### WLED controller
 
-Using the very awesome [Adafruit Sparklemtion USB Stick](https://www.adafruit.com/product/6332?srsltid=AfmBOoofGwKl6_3wlmlOFxr0aYyvWj0LTiYwuOxKr_nXXjnp-QMIW6KU), which is set up for WLED. Was simple to install and connect to the LED strip.
+I'm using the very awesome [Adafruit Sparklemtion USB Stick](https://www.adafruit.com/product/6332?srsltid=AfmBOoofGwKl6_3wlmlOFxr0aYyvWj0LTiYwuOxKr_nXXjnp-QMIW6KU), which is set up for WLED. Was simple to install and connect to the LED strip.
 
-After experimentation, I set up a bunch of presets.
+After some experimentation, I set up a bunch of presets.
 
 ### A wired connection
 
-Making the serial connection would happen either over USB or the TX/RX pins. There's a great writeup of how to do that [here](https://data.engrie.be/ESP32/ESP32_-_Part_12_-_ESP32_meets_Raspberry_Pi.pdf), which I've also saved as a PDF.
+Making the serial connection from the Pi to the WLED controller would happen either over USB or the TX/RX pins. There's a great writeup of how to do that [here](https://data.engrie.be/ESP32/ESP32_-_Part_12_-_ESP32_meets_Raspberry_Pi.pdf), which I've also saved as a PDF.
 
-In the end, I figured out how to make this connection over USB
+In the end, I figured out how to make this connection over USB.
 
 ### Installing the PI operating system & serial capabilities
 
@@ -96,8 +77,6 @@ The full install instructions, including the Pi formatting, are [here](https://g
 I'd take this to the `node-serialport` point.
 
 Node Serialport [installation notes](https://serialport.io/docs/guide-installation#raspberry-pi-linux) have additional info, and using Node Serialport is [here](https://serialport.io/docs/guide-usage). There's also info about parsers and things.
-
-Installed to here on the pi!
 
 Serialport's [API docs](https://serialport.io/docs/api-serialport/) have example code to try.
 
@@ -113,11 +92,7 @@ More on the serial connection is available in [the WLED docs](https://kno.wled.g
 
 We're going to want the **JSON over Serial** part of these docs.
 
-#### WLED API
-
 I determined that I should be able to [set new values](https://kno.wled.ge/interfaces/json-api/#setting-new-values) through the JSON API. The one we'll want, after the presets have been set, is `{"ps": x}`, where x is a preset number from -1 to 250.
-
-#### Serial from Mac
 
 First I tested controlling the WLED controller with my Mac.
 
@@ -211,11 +186,9 @@ The main script is [weather-ball.js](weather-ball.js).
 
 ### Cron
 
-Running a Node.js Script Every 15 Minutes with Cron on Raspberry Pi (by ChatGPT)
+Running a Node.js Script Every 15 Minutes with Cron on Raspberry Pi (provided by ChatGPT). This configuration runs a Node.js script every 15 minutes, even when you are not logged in via SSH.
 
-This configuration runs a Node.js script every 15 minutes, even when you are not logged in via SSH.
-
-1. Find Absolute Paths
+**Find Absolute Paths**
 
 Cron does not load your shell environment, so absolute paths are required.
 
@@ -231,7 +204,7 @@ Find your script path, for example:
 
 `/home/weatherballpi/Code/weather-ball/weather-ball.js`
 
-2. Make the Script Executable (Recommended)
+**Make the Script Executable (Recommended)**
 
 Add a shebang at the top of your script:
 
@@ -251,7 +224,7 @@ Also make a **tmp** directory for the log file.
 
 `mkdir /home/weatherballpi/Code/weather-ball/tmp`
 
-3. Create the Cron Job
+**Create the Cron Job**
 
 Open your user crontab:
 
@@ -281,7 +254,7 @@ Field	Meaning
 *	Every day of week
 ```
 
-4. Ensure Cron Is Running
+**Ensure Cron Is Running**
 
 `sudo systemctl status cron`
 
@@ -289,7 +262,7 @@ Expected output:
 
 `Active: active (running)`
 
-5. Verify Execution
+**Verify Execution**
 
 After 15 minutes:
 
@@ -299,7 +272,7 @@ To inspect cron activity:
 
 `grep CRON /var/log/syslog`
 
-6. Environment Variables (If Needed)
+**Environment Variables (If Needed)**
 
 Cron does not load .bashrc or .profile. Define variables explicitly:
 
