@@ -180,6 +180,10 @@ For my use, I'm keying the ball off of what icons the NWS shows on their web pag
 
 https://digital.mdl.nws.noaa.gov/xml/sample_products/browser_interface/ndfdXMLclient.php?lat=40.77&lon=-73.98&product=time-series&icons=icons
 
+_NOTE: These links stopped working on or befor March 23, 2026 ... the new ones are below:_
+
+The new URL is apparently: https://graphical.weather.gov/xml/SOAP_server/ndfdXMLclient.php?whichClient=NDFDgen&lat=40.77&lon=-73.98&product=time-series&icons=icons
+
 ## The code
 
 The main script is [weather-ball.js](weather-ball.js).

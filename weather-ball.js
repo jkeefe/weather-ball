@@ -22,7 +22,7 @@ const port = new SerialPort({ path: "/dev/ttyACM0", baudRate: 115200 });
 // const FORECAST_URL = `https://api.weather.gov/gridpoints/OKX/33,37/forecast/hourly`
 const LATITUDE = 40.77;
 const LONGITUDE = -73.98;
-const FORECAST_URL = `https://forecast.weather.gov/MapClick.php?lat=${LATITUDE}&lon=${LONGITUDE}&unit=0&lg=english&FcstType=dwml`;
+const FORECAST_URL = `https://graphical.weather.gov/xml/SOAP_server/ndfdXMLclient.php?whichClient=NDFDgen&lat=${LATITUDE}&lon=${LONGITUDE}&product=time-series&icons=icons`;
 const DOMAIN = "reallygoodsmarts.nyc";
 const EMAIL = "weather";
 
