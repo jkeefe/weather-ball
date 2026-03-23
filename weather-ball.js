@@ -58,6 +58,8 @@ const parseData = (xml) => {
   // drill to the base data
   const data = result.elements[0].elements.find((d) => d.name == "data");
 
+  console.log(JSON.stringify(data, null, 2));
+
   // get the time layouts
   const time_layouts = data.elements.filter((d) => d.name == "time-layout");
 
@@ -118,8 +120,6 @@ const parseData = (xml) => {
             (d) => d.name == "value",
           );
         }
-
-        console.log(JSON.stringify(weather_values, null, 2));
 
         // add this value to the block at the same index as the valid times
         block[key_name] = weather_values[index].elements[0].text;
