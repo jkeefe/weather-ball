@@ -119,7 +119,7 @@ const parseData = (xml) => {
           );
         }
 
-        // console.log(JSON.stringify(weather_values, null, 2))
+        console.log(JSON.stringify(weather_values, null, 2));
 
         // add this value to the block at the same index as the valid times
         block[key_name] = weather_values[index].elements[0].text;
